@@ -14,9 +14,15 @@ class Game:
 		self.player2 = None
 
 	def __set_game(self):
+		"""set the deck for the game and the player card
+		"""
 		self.deck = Deck()
-		self.player1 = Player(self.deck.pop(),self.PLAYER_ONE)
-		self.player2 = Player(self.deck.pop(),self.PLAYER_TWO)
+
+		card_1 = self.deck.pop()
+		self.player1  = Player(card_1,self.PLAYER_ONE)  if self.player1 == None else self.player1.change_card(card_1)
+		card_2 = self.deck.pop()
+		self.player2  = Player(card_2,self.PLAYER_TWO)  if self.player2 == None else self.player2.change_card(card_2)
+		
 		print( self.player1, self.player2)
 
 	def play_game(self):

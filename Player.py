@@ -16,20 +16,27 @@ class Player:
 	
 	
 	def __init__(self,card,number) -> None:
-		self.card = card
-		self.cash = 1000000
-		self.wins = 0
-		self.number = number
+		self.card : Card = card
+		self.cash : int = 1000000
+		self.wins : int = 0
+		self.number : int = number
 
 	def get_card(self) -> Card:
 		return self.card
 
-	def mise(self,mise):
-		if self.cash >= mise:
-			self.cash -= mise
-			return mise
-		return None
+	def mise(self,cash_bet):
+		"""allow the player to bet cash 
 
+		Args:
+			cash_bet (int): cash bet
+
+		Returns:
+			int: the cash bet
+		"""
+		if self.cash >= cash_bet:
+			self.cash -= cash_bet
+			return cash_bet
+		return None
 
 	def get_check_bet(self):
 		return self._get_action(self.CHECK_ACTION,self.BET_ACTION)
@@ -52,14 +59,17 @@ class Player:
 			player_action = input(f"Player {self.number} - Do you want to {self.ACTION[action1]} or {self.ACTION[action2]} 1 : ")
 		return player_action
 	
-	def get_number(self) -> int:
+	def get_number(self):
 		return self.number
+
+	def change_card(self, card):
+		self.card = card
+		return self
 	
-	def add_pot(self,pot) -> None:
+	def add_pot(self,pot):
 		self.cash += pot
 		self.wins += 1
-
-	
+		
 	def __repr__(self) -> str:
 		string  = \
 		f"""
