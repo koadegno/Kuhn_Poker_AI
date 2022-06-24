@@ -48,8 +48,14 @@ class Player:
 			string: player input
 		"""
 		player_action = ""
-		while player_action not in self.ACTION[action1:action2]:
-			player_action = input(f"Player {self.number}\nDo you want to {self.ACTION[action1]} or {self.ACTION[action2]} 1")
+		while player_action not in (self.ACTION[action1][0],self.ACTION[action2][0]):
+			player_action = input(f"Player {self.number} - Do you want to {self.ACTION[action1]} or {self.ACTION[action2]} 1 : ")
 		return player_action
+	
+	def get_number(self):
+		return self.number
+	
+	def add_pot(self,pot):
+		self.cash += pot
 
 	
