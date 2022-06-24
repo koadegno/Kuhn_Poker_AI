@@ -12,13 +12,22 @@ class Deck:
 	def __init__(self) -> None:
 		self.cards = []
 
-		for i in range(MAX_CARD):
+		for i in range(self.MAX_CARD):
 			self.cards.append(Card(i))
 		
 		shuffle(self.cards)
 
 	
-	def pop(self):
+	def pop(self) :
 		if len(self.cards) == 0:
 			return
 		return self.cards.pop()
+
+if __name__ == "__main__":
+	deck  = Deck()
+	print(deck.pop())
+	print(deck.pop())
+	print(deck.pop())
+	print(deck.pop())
+
+
