@@ -52,10 +52,21 @@ class Player:
 			player_action = input(f"Player {self.number} - Do you want to {self.ACTION[action1]} or {self.ACTION[action2]} 1 : ")
 		return player_action
 	
-	def get_number(self):
+	def get_number(self) -> int:
 		return self.number
 	
-	def add_pot(self,pot):
+	def add_pot(self,pot) -> None:
 		self.cash += pot
+		self.wins += 1
+
+	
+	def __repr__(self) -> str:
+		string  = \
+		f"""
+		-------------------
+		| P : {self.number}     Cash : {self.cash}     Wins : {self.wins}
+		-------------------
+		"""
+		return string
 
 	
