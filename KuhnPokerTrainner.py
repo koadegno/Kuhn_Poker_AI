@@ -130,6 +130,9 @@ class Node:
 					  for x in self.get_average_strategy()]
 		return '{} - {}'.format(self.key.ljust(6), strategies)
 
+	def get_key(self)-> str: 
+		return self.key[1:]
+
 
 def display_results(ev, i_map):
 	print('player 1 expected value: {}'.format(ev))
