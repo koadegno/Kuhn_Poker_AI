@@ -49,6 +49,7 @@ class Game:
 					if action_player1 in FOLD:
 						self.show_winner(self.player2) # player two takes the pot of 3 
 					else:
+						self.pot += self.player1.mise(1)
 						self.show_winner() # showdown for the pot of 4
 			else: # player 1 bet
 				self.pot += self.player1.mise(1)
