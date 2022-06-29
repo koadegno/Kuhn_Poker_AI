@@ -160,7 +160,7 @@ if __name__ == "__main__":
 			kuhn.train(n_iterations=training_stage[0],verbose=True)
 
 			f = open(f"AI_strategies_{training_stage[1]}_{i}.pkl","wb")
-			pickle.dump(dict,f)
+			pickle.dump(kuhn.node_map,f)
 			f.close()
 
 	#kuhn.train(n_iterations=500)
