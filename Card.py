@@ -26,9 +26,11 @@ class Card:
 		return False
 
 	def __gt__(self, card_2):
-		if self.value > card_2.value:
-			return True
-		return False
+		return self.value > card_2.value
+		
+
+	def __eq__(self, card2: object) -> bool:
+		return self.value == card2.value
 
 	def __repr__(self): 
 		return self.values[self.value] 
