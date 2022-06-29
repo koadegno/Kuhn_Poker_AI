@@ -120,31 +120,32 @@ class AIPlayer(Player):
 
 	def get_check_bet(self,precedent_move=None):
 		self._add_history(precedent_move)
-		return super().get_check_bet()
+		if len(self.history) % 2  == 0 : #player 1
+			node : Node = self.dict_strategies[1]
+		else:# player 2
+			node : Node = self.dict_strategies[2]
+		
+		print(node)
+		probalities = node.get_average_strategy()
+		return choices(self.ACTION[0:2],weights=probalities,k=1)[0][0]
 		
 	def get_fold_call(self,precedent_move=None):
 		self._add_history(precedent_move)
-		return super().get_fold_call()
+		if len(self.history) % 2  == 0 : #player 1
+			node : Node = self.dict_strategies[2]
+		else:
+			node : Node = self.dict_strategies[1]
+
+		print(node)
+		probalities = node.get_average_strategy()
+		return choices(self.ACTION[2:],weights=probalities,k=1)[0][0]
 
 	def _add_history(self,precedent_move):
 		self.history += precedent_move if precedent_move != None else ""
 
-
-	def _get_action(self, action1, action2):
-		if action1 == self.CHECK_ACTION:
-			if len(self.history) % 2  == self.number-1:
-				# print(self.dict_strategies)
-				node : Node = self.dict_strategies[1]
-				probalities = node.get_average_strategy()
-				if self.history.strip() == node.get_key().strip():
-					print(probalities)
-					return choices(self.ACTION[0:2],weights=probalities,k=1)[0]
-				
-		else:
-			pass
-			
-
+	
 if __name__ == "__main__":
 	
-	player = AIPlayer(Card(2),1,"EASY")
-	print(player.get_check_bet())
+	player = AIPlayer(Card(2),2,"EASY")
+	
+	print("resulte : ",player.get_fold_call("b"))
