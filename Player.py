@@ -1,5 +1,8 @@
-
+from dataclasses import replace
+import pickle
 from Card import Card
+from random import randint
+from KuhnPokerTrainner import Node
 
 CHECK = "check"
 BET = "bet"
@@ -79,4 +82,38 @@ class Player:
 		"""
 		return string
 
+
+class AIPlayer(Player):
 	
+	AI_FILE_NAME = "AI_strategies_*_#.pkl"
+
+	def __init__(self, card, number,level) -> None:
+		super().__init__(card, number)
+		self.level = level.lower()
+		ia_number = randint(1,3)
+		filename = self.AI_FILE_NAME.replace('*',self.level).replace('#',str(ia_number))
+		print(filename)
+		file = open(filename, 'rb')
+		self.dict_strategies : dict = pickle.load(file,encoding="bytes")
+		file.close()
+		self.dict_strategies = self.set_up_strategies()
+	
+	def set_up_strategies(self):
+
+		#just get a list of items sorted
+		temporary_dict = {}
+		print(self.dict_strategies)
+		sorted_items = sorted(self.dict_strategies.items(), key=lambda x: x[0]) 
+
+		for card, v in filter(lambda x: len(x[0]) % 2 == self.number-1, sorted_items):
+			
+			if self.card == Card(int(card.split()[0].strip())):
+
+				print(card,end=" * * ")
+				print(v)
+		
+
+
+if __name__ == "__main__":
+	
+	player = AIPlayer(Card(2),1,"EASY")
