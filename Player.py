@@ -1,7 +1,7 @@
 from dataclasses import replace
 import pickle
 from Card import Card
-from random import randint
+from random import randint, choices
 from KuhnPokerTrainner import Node
 
 CHECK = "check"
@@ -82,6 +82,8 @@ class Player:
 		"""
 		return string
 
+	def precedent_move(self):
+		return
 
 class AIPlayer(Player):
 	
@@ -97,23 +99,52 @@ class AIPlayer(Player):
 		self.dict_strategies : dict = pickle.load(file,encoding="bytes")
 		file.close()
 		self.dict_strategies = self.set_up_strategies()
+		self.history = ""
 	
 	def set_up_strategies(self):
 
 		#just get a list of items sorted
 		temporary_dict = {}
-		print(self.dict_strategies)
 		sorted_items = sorted(self.dict_strategies.items(), key=lambda x: x[0]) 
-
-		for card, v in filter(lambda x: len(x[0]) % 2 == self.number-1, sorted_items):
+		turn = 1
+		# get  only strategie for player 1
+		for card, strat_proba in filter(lambda x: len(x[0]) % 2 == self.number-1, sorted_items): 
 			
-			if self.card == Card(int(card.split()[0].strip())):
+			if self.card == Card(int(card.split()[0].strip())): # get the good card strategie
+				temporary_dict[turn] = strat_proba
+				turn+=1
+				#print(card,end=" * * ")
+				#print(strat_proba)
+		print(temporary_dict)
+		return temporary_dict
 
-				print(card,end=" * * ")
-				print(v)
+	def get_check_bet(self,precedent_move=None):
+		self._add_history(precedent_move)
+		return super().get_check_bet()
 		
+	def get_fold_call(self,precedent_move=None):
+		self._add_history(precedent_move)
+		return super().get_fold_call()
 
+	def _add_history(self,precedent_move):
+		self.history += precedent_move if precedent_move != None else ""
+
+
+	def _get_action(self, action1, action2):
+		if action1 == self.CHECK_ACTION:
+			if len(self.history) % 2  == self.number-1:
+				# print(self.dict_strategies)
+				node : Node = self.dict_strategies[1]
+				probalities = node.get_average_strategy()
+				if self.history.strip() == node.get_key().strip():
+					print(probalities)
+					return choices(self.ACTION[0:2],weights=probalities,k=1)[0]
+				
+		else:
+			pass
+			
 
 if __name__ == "__main__":
 	
 	player = AIPlayer(Card(2),1,"EASY")
+	print(player.get_check_bet())
