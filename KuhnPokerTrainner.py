@@ -1,7 +1,9 @@
+import pickle
 import numpy as np
 from random import shuffle
 import time
 import sys
+import csv
 
 
 class Kunh:
@@ -15,7 +17,7 @@ class Kunh:
 		self.deck = np.array([0, 1, 2])
 		self.n_actions = 2
 
-	def train(self, n_iterations=50000):
+	def train(self, n_iterations=50000,verbose=True):
 		expected_game_value = 0
 		for _ in range(n_iterations):
 			shuffle(self.deck)
@@ -24,7 +26,8 @@ class Kunh:
 				v.update_strategy()
 
 		expected_game_value /= n_iterations
-		display_results(expected_game_value, self.node_map)
+		if(verbose):
+			display_results(expected_game_value, self.node_map)
 
 	def cfr(self, history, pr_1, pr_2):
 		n = len(history)
@@ -125,7 +128,7 @@ class Node:
 	def __str__(self):
 		strategies = ['{:03.2f}'.format(x)
 					  for x in self.get_average_strategy()]
-		return '{} {}'.format(self.key.ljust(6), strategies)
+		return '{} - {}'.format(self.key.ljust(6), strategies)
 
 
 def display_results(ev, i_map):
@@ -147,7 +150,17 @@ if __name__ == "__main__":
 	EASY = (500,'easy')
 	MODERATE = (50000,'moderate')
 	HARD = (1000000,'hard')
-	training_stage = [EASY[0],MODERATE[0],HARD[0]]
-	
-	kuhn = Kunh()
-	kuhn.train(n_iterations=500)
+	training_stages = [EASY,MODERATE,HARD]
+	field_names = ["move","probabilty"]
+	for i in range(1,4):
+		for training_stage in training_stages:
+			kuhn = Kunh()
+			print(f"\nstrategie {i} pour {training_stage[1]}")
+
+			kuhn.train(n_iterations=training_stage[0],verbose=True)
+
+			f = open(f"AI_strategies_{training_stage[1]}_{i}.pkl","wb")
+			pickle.dump(dict,f)
+			f.close()
+
+	#kuhn.train(n_iterations=500)
