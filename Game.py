@@ -1,5 +1,6 @@
 from Deck import Deck
-from Player import CHECK,FOLD,Player
+from Player import CHECK,FOLD, AIPlayer,Player
+from KuhnPokerTrainner import Node
 
 
 
@@ -21,7 +22,7 @@ class Game:
 		card_1 = self.deck.pop()
 		self.player1  = Player(card_1,self.PLAYER_ONE)  if self.player1 == None else self.player1.change_card(card_1)
 		card_2 = self.deck.pop()
-		self.player2  = Player(card_2,self.PLAYER_TWO)  if self.player2 == None else self.player2.change_card(card_2)
+		self.player2  = AIPlayer(card_2,self.PLAYER_TWO)  if self.player2 == None else self.player2.change_card(card_2)
 		
 		print( self.player1, self.player2)
 
@@ -37,14 +38,14 @@ class Game:
 			#Player 1 check or bet 
 			action_player1 = self.player1.get_check_bet()
 			if action_player1 in CHECK:
-				action_player2 = self.player2.get_check_bet()
+				action_player2 = self.player2.get_check_bet(action_player1)
 
 				if action_player2 in CHECK: # showdown for the pot of 2
 					self.show_winner()
 				else: # bet
 					self.pot += self.player2.mise(1)
 
-					action_player1 = self.player1.get_fold_call()
+					action_player1 = self.player1.get_fold_call(action_player2)
 
 					if action_player1 in FOLD:
 						self.show_winner(self.player2) # player two takes the pot of 3 
@@ -54,7 +55,7 @@ class Game:
 			else: # player 1 bet
 				self.pot += self.player1.mise(1)
 
-				action_player2 = self.player2.get_fold_call()
+				action_player2 = self.player2.get_fold_call(action_player1)
 				if action_player2 in FOLD:
 					self.show_winner(self.player1) # player two takes the pot of 3 
 				else:

@@ -41,10 +41,10 @@ class Player:
 			return cash_bet
 		return None
 
-	def get_check_bet(self):
+	def get_check_bet(self,precedent_move=None):
 		return self._get_action(self.CHECK_ACTION,self.BET_ACTION)
 			
-	def get_fold_call(self):
+	def get_fold_call(self,precedent_move=None):
 		return self._get_action(self.FOLD_ACTION,self.CALL_ACTION)
 	
 	def _get_action(self,action1,action2):
@@ -77,7 +77,7 @@ class Player:
 		string  = \
 		f"""
 		-------------------
-		| P : {self.number}     Cash : {self.cash}     Wins : {self.wins}
+		| P : {self.number}     Card : {self.card}     Cash : {self.cash}     Wins : {self.wins}  
 		-------------------
 		"""
 		return string
@@ -89,7 +89,7 @@ class AIPlayer(Player):
 	
 	AI_FILE_NAME = "AI_strategies_*_#.pkl"
 
-	def __init__(self, card, number,level) -> None:
+	def __init__(self, card, number,level="hard") -> None:
 		super().__init__(card, number)
 		self.level = level.lower()
 		ia_number = randint(1,3)
@@ -98,9 +98,14 @@ class AIPlayer(Player):
 		file = open(filename, 'rb')
 		self.dict_strategies : dict = pickle.load(file,encoding="bytes")
 		file.close()
-		self.dict_strategies = self.set_up_strategies()
+		self.strategies = self.set_up_strategies()
 		self.history = ""
 	
+	def change_card(self, card) -> Player:
+		super().change_card(card)
+		self.strategies = self.set_up_strategies()
+		return self
+
 	def set_up_strategies(self):
 
 		#just get a list of items sorted
@@ -113,32 +118,34 @@ class AIPlayer(Player):
 			if self.card == Card(int(card.split()[0].strip())): # get the good card strategie
 				temporary_dict[turn] = strat_proba
 				turn+=1
-				#print(card,end=" * * ")
-				#print(strat_proba)
 		print(temporary_dict)
 		return temporary_dict
 
 	def get_check_bet(self,precedent_move=None):
 		self._add_history(precedent_move)
 		if len(self.history) % 2  == 0 : #player 1
-			node : Node = self.dict_strategies[1]
+			node : Node = self.strategies[1]
 		else:# player 2
-			node : Node = self.dict_strategies[2]
+			node : Node = self.strategies[2]
 		
 		print(node)
 		probalities = node.get_average_strategy()
-		return choices(self.ACTION[0:2],weights=probalities,k=1)[0][0]
+		ia_choice = choices(self.ACTION[0:2],weights=probalities,k=1)[0]
+		print(f"IA choose to {ia_choice}")
+		return ia_choice[0]
 		
 	def get_fold_call(self,precedent_move=None):
 		self._add_history(precedent_move)
 		if len(self.history) % 2  == 0 : #player 1
-			node : Node = self.dict_strategies[2]
+			node : Node = self.strategies[2]
 		else:
-			node : Node = self.dict_strategies[1]
+			node : Node = self.strategies[1]
 
 		print(node)
 		probalities = node.get_average_strategy()
-		return choices(self.ACTION[2:],weights=probalities,k=1)[0][0]
+		ia_choice = choices(self.ACTION[2:],weights=probalities,k=1)[0]
+		print(f"IA choose to {ia_choice}")
+		return ia_choice[0]
 
 	def _add_history(self,precedent_move):
 		self.history += precedent_move if precedent_move != None else ""
