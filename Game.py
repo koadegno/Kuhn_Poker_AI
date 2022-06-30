@@ -42,7 +42,7 @@ class Game:
 
 				if action_player2 in CHECK: # showdown for the pot of 2
 					self.show_winner()
-				else: # bet
+				else: # player 2 bet
 					self.pot += self.player2.mise(1)
 
 					action_player1 = self.player1.get_fold_call(action_player2)
@@ -54,7 +54,7 @@ class Game:
 						self.show_winner() # showdown for the pot of 4
 			else: # player 1 bet
 				self.pot += self.player1.mise(1)
-
+				print("Player 2 have to fold or call ...")
 				action_player2 = self.player2.get_fold_call(action_player1)
 				if action_player2 in FOLD:
 					self.show_winner(self.player1) # player two takes the pot of 3 

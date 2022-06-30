@@ -107,6 +107,7 @@ class AIPlayer(Player):
 	
 	def change_card(self, card) -> Player:
 		super().change_card(card)
+		self.history = ""
 		self.strategies = self.set_up_strategies()
 		return self
 
@@ -120,10 +121,13 @@ class AIPlayer(Player):
 		sorted_items = sorted(self.dict_strategies.items(), key=lambda x: x[0]) 
 		turn = 1
 		# get only strategie for player 1
-		for card, strat_proba in filter(lambda x: len(x[0]) % 2 == self.number-1, sorted_items): 
-			
-			if self.card == Card(int(card.split()[0].strip())): # get the good card strategie
-				print(strat_proba)
+		for history, strat_proba in filter(lambda x: len(x[0]) % 2 == self.number-1, sorted_items): 
+			# print()
+			card_number = int(history.split()[0].strip())
+			# print(history, strat_proba, card_number,sep=" *** ")
+			# print()
+			if self.card == Card(card_number): # get the good card strategie
+				# print(strat_proba)
 				temporary_dict[turn] = strat_proba
 				turn+=1
 		return temporary_dict
@@ -143,11 +147,11 @@ class AIPlayer(Player):
 		if len(self.history) % 2  == 0 : #player 1
 			node : Node = self.strategies[turn_j1]
 		else: #player 2
-			print("player 2 - turn {}".format(turn_j1%2+1))
+			# print("player 2 - turn {}".format(turn_j1%2+1))
 			node : Node = self.strategies[turn_j1%2+1] # strategies always inverse of turn_j1 if 1 then 2, if 2 then 1
 
-		print(node, self.card)
 		probalities = node.get_average_strategy()
+		print(self.history,node, self.card, probalities,sep=" * * ")
 		ia_choice = choices(action_intervales,weights=probalities,k=1)[0]
 		print(f"Player {self.number} - chooses to {ia_choice}")
 		return ia_choice[0]
@@ -161,4 +165,4 @@ if __name__ == "__main__":
 	
 	player = AIPlayer(Card(0),2,"Hard")
 	
-	print("resulte : ",player.get_check_bet("c"))
+	print("resulte : ",player.get_fold_call("b"))
