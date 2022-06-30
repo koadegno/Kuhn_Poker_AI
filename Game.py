@@ -36,6 +36,11 @@ class Game:
 		print( self.player1, self.player2)
 
 	def home(self):
+		"""Ask the settings for the games
+
+		Returns:
+			list: the list containing the settings for the games
+		"""
 		user_choices = []
 		user_choice = self.number_player()
 		user_choices.append(int(user_choice))
@@ -46,6 +51,11 @@ class Game:
 		return user_choices
 
 	def get_player_number(self):
+		"""ask want the player wants to play
+
+		Returns:
+			str: 1 or 2 the player answer
+		"""		
 		user_choice = ""
 		while user_choice not in ("1","2"):
 			user_choice = input(
@@ -56,6 +66,11 @@ class Game:
 		return user_choice
 
 	def number_player(self):
+		"""ask the number of player for the game
+
+		Returns:
+			str: 1 or 2 
+		"""		
 		user_choice = ""
 		while user_choice not in ("1","2"):
 			user_choice = input("""\t\t* Welcome to the Kuhn Poker game *\n
@@ -102,7 +117,6 @@ class Game:
 
 			input("enter")
 		
-
 	def show_winner(self,winner_player : Player = None ):
 		"""show the winner of this turn
 
@@ -128,7 +142,7 @@ class Game:
 		"""		
 		player_number = winner_player.get_number()
 		if action == FOLD:
-			print(f"The player {3 - player_number} {action} so player {player_number} wins the pot of {self.pot}")
+			print(f"\nThe player {3 - player_number} {action} so player {player_number} wins the pot of {self.pot}\n")
 		else:
 			print(f"""
 Player {self.player1.get_number()} has {self.player1.get_card()} and Player {self.player2.get_number()} has {self.player2.get_card()}

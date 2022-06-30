@@ -1,9 +1,12 @@
 import pickle
 import numpy as np
 from random import shuffle
-import time
-import sys
-import csv
+""" 
+
+Source : https://github.com/IanSullivan/PokerCFR
+some litle modification but the main code come from the like above
+
+"""
 
 
 class Kunh:
@@ -166,4 +169,3 @@ if __name__ == "__main__":
 			pickle.dump(kuhn.node_map,f)
 			f.close()
 
-	#kuhn.train(n_iterations=500)

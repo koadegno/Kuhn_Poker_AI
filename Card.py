@@ -1,6 +1,4 @@
 
-from logging import raiseExceptions
-
 
 class Card:
 	""" Class representing Kuhn poker card
