@@ -27,6 +27,9 @@ class Player:
 	def get_card(self) -> Card:
 		return self.card
 
+	def _get_card(self):
+		return self.get_card()
+
 	def mise(self,cash_bet):
 		"""allow the player to bet cash 
 
@@ -77,7 +80,7 @@ class Player:
 		string  = \
 		f"""
 		-------------------
-		| P : {self.number}     Card : {self.card}     Cash : {self.cash}     Wins : {self.wins}  
+		| P : {self.number}     Card : {self._get_card()}     Cash : {self.cash}     Wins : {self.wins}  
 		-------------------
 		"""
 		return string
@@ -105,6 +108,11 @@ class AIPlayer(Player):
 		super().change_card(card)
 		self.strategies = self.set_up_strategies()
 		return self
+
+	def _get_card(self) -> Card:
+		return Card(3)
+	
+	
 
 	def set_up_strategies(self):
 

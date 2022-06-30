@@ -10,12 +10,12 @@ class Card:
 			card_values : the values of the card
 	"""
 
-	values = ["Jack","Queen","King"]
+	values = ["Jack","Queen","King","####"]
 
 	def __init__(self,card_value) -> None:
 		
-		if card_value < 0 or card_value > 3:
-			raise TypeError("Card value must be between 0 and 2")
+		if card_value < 0 or card_value > 4:
+			raise TypeError("Card value must be between 0 and 3")
 
 		self.value = card_value
 	
