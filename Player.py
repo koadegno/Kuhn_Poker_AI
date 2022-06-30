@@ -97,7 +97,7 @@ class AIPlayer(Player):
 		super().__init__(card, number)
 		self.level = level.lower()
 		ia_number = randint(1,3)
-		filename = self.AI_FILE_NAME.replace('*',self.level).replace('#',str(2))
+		filename = self.AI_FILE_NAME.replace('*',self.level).replace('#',str(ia_number))
 		print(filename)
 		file = open(filename, 'rb')
 		self.dict_strategies : dict = pickle.load(file,encoding="bytes")

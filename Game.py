@@ -14,22 +14,60 @@ class Game:
 		self.player1 = None
 		self.player2 = None
 
-	def __set_game(self):
-		"""set the deck for the game and the player card
+	def __set_game(self, game_settings):
+		"""set the deck for the game and the players cards
 		"""
 		self.deck = Deck()
-
 		card_1 = self.deck.pop()
-		self.player1  = Player(card_1,self.PLAYER_ONE)  if self.player1 == None else self.player1.change_card(card_1)
 		card_2 = self.deck.pop()
-		self.player2  = AIPlayer(card_2,self.PLAYER_TWO)  if self.player2 == None else self.player2.change_card(card_2)
-		
+		PLAYER_NUMBERS = 2
+		if game_settings[0] == PLAYER_NUMBERS:
+			self.player1  = Player(card_1,self.PLAYER_ONE)  if self.player1 == None else self.player1.change_card(card_1)
+			self.player2  = Player(card_2,self.PLAYER_TWO)  if self.player2 == None else self.player2.change_card(card_2)
+		else:
+			if game_settings[1] == self.PLAYER_ONE:
+				self.player1  = Player(card_1,self.PLAYER_ONE)  if self.player1 == None else self.player1.change_card(card_1)
+				self.player2  = AIPlayer(card_2,self.PLAYER_TWO)  if self.player2 == None else self.player2.change_card(card_2)
+
+			else:
+				self.player1  = AIPlayer(card_1,self.PLAYER_ONE)  if self.player1 == None else self.player1.change_card(card_1)
+				self.player2  = Player(card_2,self.PLAYER_TWO)  if self.player2 == None else self.player2.change_card(card_2)
+
 		print( self.player1, self.player2)
 
-	def play_game(self):
+	def home(self):
+		user_choices = []
+		user_choice = self.number_player()
+		user_choices.append(int(user_choice))
 
+		if user_choice == "1":
+			user_choices.append(int(self.get_player_number()))
+		
+		return user_choices
+
+	def get_player_number(self):
+		user_choice = ""
+		while user_choice not in ("1","2"):
+			user_choice = input(
+							"""
+				Do you want to play player 1 or player 2 ?\n
+					1) player 1 (1)
+					2) player 2 (2)\n""").strip()
+		return user_choice
+
+	def number_player(self):
+		user_choice = ""
+		while user_choice not in ("1","2"):
+			user_choice = input("""\t\t* Welcome to the Kuhn Poker game *\n
+				\t1) One player  (1)
+				\t2) Two players (2)\n""").strip()
+		
+		return user_choice
+
+	def play_game(self):
+		game_settings = self.home()
 		while True:
-			self.__set_game()
+			self.__set_game(game_settings)
 
 			#Each player antes 1
 			self.pot += self.player1.mise(1)
@@ -61,6 +99,9 @@ class Game:
 				else:
 					self.pot += self.player2.mise(1)
 					self.show_winner() # showdown for the pot of 4
+
+			input("enter")
+		
 
 	def show_winner(self,winner_player : Player = None ):
 		"""show the winner of this turn
