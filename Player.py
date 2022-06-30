@@ -1,5 +1,6 @@
 from dataclasses import replace
 import pickle
+from time import sleep
 from Card import Card
 from random import randint, choices
 from KuhnPokerTrainner import Node
@@ -96,7 +97,7 @@ class AIPlayer(Player):
 		super().__init__(card, number)
 		self.level = level.lower()
 		ia_number = randint(1,3)
-		filename = self.AI_FILE_NAME.replace('*',self.level).replace('#',str(ia_number))
+		filename = self.AI_FILE_NAME.replace('*',self.level).replace('#',str(2))
 		print(filename)
 		file = open(filename, 'rb')
 		self.dict_strategies : dict = pickle.load(file,encoding="bytes")
@@ -112,48 +113,45 @@ class AIPlayer(Player):
 	def _get_card(self) -> Card:
 		return Card(3)
 	
-	
-
 	def set_up_strategies(self):
 
-		#just get a list of items sorted
 		temporary_dict = {}
+		#just get a list of items sorted
 		sorted_items = sorted(self.dict_strategies.items(), key=lambda x: x[0]) 
 		turn = 1
-		# get  only strategie for player 1
+		# get only strategie for player 1
 		for card, strat_proba in filter(lambda x: len(x[0]) % 2 == self.number-1, sorted_items): 
 			
 			if self.card == Card(int(card.split()[0].strip())): # get the good card strategie
+				print(strat_proba)
 				temporary_dict[turn] = strat_proba
 				turn+=1
-		print(temporary_dict)
 		return temporary_dict
 
 	def get_check_bet(self,precedent_move=None):
 		self._add_history(precedent_move)
-		if len(self.history) % 2  == 0 : #player 1
-			node : Node = self.strategies[1]
-		else:# player 2
-			node : Node = self.strategies[2]
-		
-		print(node)
-		probalities = node.get_average_strategy()
-		ia_choice = choices(self.ACTION[0:2],weights=probalities,k=1)[0]
-		print(f"IA choose to {ia_choice}")
-		return ia_choice[0]
+		return super().get_check_bet(precedent_move)
 		
 	def get_fold_call(self,precedent_move=None):
 		self._add_history(precedent_move)
-		if len(self.history) % 2  == 0 : #player 1
-			node : Node = self.strategies[2]
-		else:
-			node : Node = self.strategies[1]
+		return super().get_fold_call(precedent_move)
 
-		print(node)
+	def _get_action(self, action1, action2):
+		turn_j1 = 1 if action1 == self.CHECK_ACTION else 2
+		action_intervales = self.ACTION[0:2] if action1 == self.CHECK_ACTION else self.ACTION[2:]
+		
+		if len(self.history) % 2  == 0 : #player 1
+			node : Node = self.strategies[turn_j1]
+		else: #player 2
+			print("player 2 - turn {}".format(turn_j1%2+1))
+			node : Node = self.strategies[turn_j1%2+1] # strategies always inverse of turn_j1 if 1 then 2, if 2 then 1
+
+		print(node, self.card)
 		probalities = node.get_average_strategy()
-		ia_choice = choices(self.ACTION[2:],weights=probalities,k=1)[0]
-		print(f"IA choose to {ia_choice}")
+		ia_choice = choices(action_intervales,weights=probalities,k=1)[0]
+		print(f"Player {self.number} - chooses to {ia_choice}")
 		return ia_choice[0]
+		
 
 	def _add_history(self,precedent_move):
 		self.history += precedent_move if precedent_move != None else ""
@@ -161,6 +159,6 @@ class AIPlayer(Player):
 	
 if __name__ == "__main__":
 	
-	player = AIPlayer(Card(2),2,"EASY")
+	player = AIPlayer(Card(0),2,"Hard")
 	
-	print("resulte : ",player.get_fold_call("b"))
+	print("resulte : ",player.get_check_bet("c"))
